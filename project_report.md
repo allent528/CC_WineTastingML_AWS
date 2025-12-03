@@ -1,7 +1,7 @@
 # Wine Quality Prediction Project Report
 
 **Name:** Allen Thomas
-**Date:** 12/2/2025
+**Date:** 12/3/2025
 
 ## Links
 - **GitHub Repository:** https://github.com/allent528/CC_WineTastingML_AWS
@@ -69,6 +69,7 @@
 -   **Code Generation**: The AI agent generated the initial boilerplate for `train_model.py` and `predict.py`, including SparkSession initialization, data loading with schema options, and the MLlib pipeline (VectorAssembler, LogisticRegression).
 -   **Dockerization**: The AI agent created the `Dockerfile` to containerize the PySpark application, ensuring Java and Python dependencies were met.
 -   **Refinement**: I reviewed the generated code, specifically checking the S3 paths and column handling.
+-   **Setup Instructions**: The AI agent provided most of the project_report.md file with setup instructions for the project.
 
 **Experience**:
 The AI copilot significantly accelerated the development process by providing syntactically correct PySpark code and a working Docker configuration. It handled the boilerplate effectively, allowing me to focus on the logic and AWS configuration.
