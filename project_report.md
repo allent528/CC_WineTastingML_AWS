@@ -7,10 +7,10 @@
 - **GitHub Repository:** https://github.com/allent528/CC_WineTastingML_AWS
 - **Docker Hub Image:** https://hub.docker.com/r/allent528/wine-prediction
 
-## Setup and Execution Instructions
+## Setup and Usage steps
 
 ### 1. Cloud Environment Setup (AWS)
-1.  **S3 Bucket**: Ensure an S3 bucket (e.g., `s3winetasting`) exists and contains `TrainingDataset.csv` and `ValidationDataset.csv`.
+1.  **S3 Bucket**: Ensure an S3 bucket (e.g., `wines3bucket`) exists and contains `TrainingDataset.csv` and `ValidationDataset.csv`.
 2.  **EMR Cluster**:
     -   Create an EMR cluster with Spark installed.
     -   Ensure the cluster has access to the S3 bucket (IAM roles).
@@ -26,17 +26,22 @@
 3.  **Process**: The script will perform a grid search over regularization parameters (`regParam`: 0.0, 0.01, 0.1, 0.3) and elastic net mixing (`elasticNetParam`: 0.0, 0.5, 1.0), evaluating each on the validation set.
 4.  **Output**: The best performing model (highest F1 score) will be saved to `s3://wines3bucket/wine_quality_model`.
 
-### 3. Prediction Application (Single EC2 Instance)
+### 3. Prediction Application (Single EC2 Instance - No Docker)
 **Prerequisites**: Java and PySpark installed on the EC2 instance.
 1.  Copy `predict.py` to the EC2 instance.
 2.  Download the `ValidationDataset.csv` (or use a test file) to the local filesystem.
-3.  Run the prediction application:
+3.  **Download Model**: The trained model is included in this repository (`wine_quality_model/`).
+    *Optional (if re-downloading from S3)*:
+    ```bash
+    aws s3 cp --recursive s3://wines3bucket/wine_quality_model/ ./wine_quality_model/
+    ```
+4.  Run the prediction application:
     ```bash
     spark-submit predict.py ValidationDataset.csv
     ```
-4.  **Output**: The application will print the F1 score.
+5.  **Output**: The application will print the F1 score.
 
-4.  **Dockerized Prediction Application**
+### 4. Dockerized Prediction Application
 **Prerequisites**: Docker installed.
 1.  **Build the Image**:
     ```bash
@@ -56,13 +61,14 @@
 **Results**:
 -   **F1 Score**: 0.5718 (achieved on ValidationDataset.csv)
 
+
 ## ChatGPT/AI Copilot Usage Report
 **Tool Used**: Google Deepmind's Antigravity Agent (acting as an AI Pair Programmer).
 
 **Usage Description**:
 -   **Code Generation**: The AI agent generated the initial boilerplate for `train_model.py` and `predict.py`, including SparkSession initialization, data loading with schema options, and the MLlib pipeline (VectorAssembler, LogisticRegression).
 -   **Dockerization**: The AI agent created the `Dockerfile` to containerize the PySpark application, ensuring Java and Python dependencies were met.
--   **Refinement**: I reviewed the generated code, specifically checking the S3 paths and column handling. The AI correctly identified the need to handle quoted headers in the CSV files.
+-   **Refinement**: I reviewed the generated code, specifically checking the S3 paths and column handling.
 
 **Experience**:
 The AI copilot significantly accelerated the development process by providing syntactically correct PySpark code and a working Docker configuration. It handled the boilerplate effectively, allowing me to focus on the logic and AWS configuration.
