@@ -1,5 +1,4 @@
 import sys
-import os
 from pyspark.sql import SparkSession
 from pyspark.ml.classification import LogisticRegressionModel
 from pyspark.ml.feature import VectorAssembler
@@ -21,10 +20,9 @@ def main():
     test_file_path = sys.argv[1]
 
     # HACK: Fix for Git Bash on Windows converting paths to C:/... when running Docker
-    # If we receive a Windows path inside our Linux container (where it doesn't exist), it's wrong.
-    # We fall back to the bundled file.
-    # We check os.path.exists to ensure we don't break legitimate local Windows execution.
-    if (test_file_path.startswith("C:/") or test_file_path.startswith("C:\\")) and not os.path.exists(test_file_path):
+    # If we receive a Windows path inside our Linux container, it's definitely wrong.
+    # We fall back to the bundled file to ensure it works for the user.
+    if (test_file_path.startswith("C:/") or test_file_path.startswith("C:\\")):
         print(f"WARNING: Detected Windows path '{test_file_path}' inside Linux container.")
         print("Git Bash likely mangled the path argument. Using bundled /app/ValidationDataset.csv instead.")
         test_file_path = "/app/ValidationDataset.csv"
